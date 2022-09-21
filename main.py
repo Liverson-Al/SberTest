@@ -6,10 +6,10 @@ import models
 
 
 class Car(BaseModel): #serializer
-    SerialNumber:str
-    AutoModel:str
-    AutoOwner:str
-    AutoMileage:float
+    serialnumber:str
+    automodel:str
+    autoowner:str
+    automileage:int
 
     class Config:
         orm_mode=True
@@ -32,23 +32,20 @@ def getAll(page: int):
 
 @app.post('/car', response_model=Car, status_code=status.HTTP_201_CREATED)
 def CreatePost(car: Car):
-    new_car = models.Car(
-        SerialNumber=Car.SerialNumber,
-        AutoModel=Car.AutoModel,
-        AutoOwner=Car.AutoOwner,
-        AutoMileage=Car.AutoMileage
-    )
 
-    db_item = models.query(models.Car).filter(car.SerialNumber == new_car.SerialNumber).first()
+    db_item = db.query(models.Car).filter(models.Car.serialnumber == car.serialnumber).first()
 
-    if db_item is not None:
-        UpdatePostByPostId(new_car.SerialNumber, new_car)
-        return new_car
+    if db_item == None:
+        db.add(car)
+    else:
+        db_item.automodel = car. automodel
+        db_item.autoowner = car.autoowner
+        db_item.automileage = car.automileage
 
-    db.add(new_car)
     db.commit()
+    db.refresh(db_item)
+    return(car)
 
-    return new_car
 
 
 @app.put('/car', response_model=Car, status_code=status.HTTP_200_OK)
@@ -73,4 +70,3 @@ def DeletePostByPostId(id: int):
     db.commit()
 
     return car_to_delete
-
