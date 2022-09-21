@@ -1,15 +1,11 @@
-from sqlalchemy import Column, Float, String, Date
+from sqlalchemy import Column, Float, String, Date, Integer
 from sqlalchemy.orm import sessionmaker
 from database import Base, engine
 
 
 class Car(Base):
     __tablename__ = "automobile_info"
-    SerialNumber = Column(String, primary_key=True)
-    AutoModel = Column(String)
-    AutoOwner = Column(String)
-    AutoMileage = Column(Float)
-
-
-Base.metadata.create_all(bind=engine)
-SessionLocal = sessionmaker(autoflush=False, bind=engine)
+    serialnumber = Column(String(11), primary_key=True)
+    automodel = Column(String(40))
+    autoowner = Column(String(20))
+    automileage = Column(Integer)
